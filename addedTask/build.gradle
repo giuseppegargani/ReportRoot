@@ -1,0 +1,95 @@
+/* COSE DA FARE:
+    1 - VERIFICARE DA ZERO, con app nuova e senza RUNNER
+    2 - Condizioni di errore che  non blocchino (se non trova il file per esempio!!!)
+
+ */
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    testVariants.all { variant ->
+        variant.connectedInstrumentTest.doLast {
+            println "This will be executed right after our connectedInstrumentTest!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            println "This will be executed right after our connectedInstrumentTest!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            println "This will be executed right after our connectedInstrumentTest!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            println "This will be executed right after our connectedInstrumentTest!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            println "This will be executed right after our connectedInstrumentTest!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            println "The name of the test type: $connectedInstrumentTest.name"
+            println "The type of test $connectedInstrumentTest.class"
+        }
+        connectedAndroidTest.finalizedBy(hello)
+        assembleDebugAndroidTest.finalizedBy(hello)
+    }
+
+    task hello() {
+        doLast {
+            println("ECCHIME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        }
+    }
+
+    //VERIFICARE CHE TRASFERISCA PER DIVERSI COMANDI TEST STRUMENTALE, CON IF CONDIZIONALE (NON ERRORE) E SENZA ANDROIDJUNITRUNNER
+    task customInstr (type: Exec) {
+
+        def prova = 'com'
+        //esegue il comando
+        //commandLine 'adb', 'shell', 'am', 'instrument', '-w', '-e', 'class', 'com.example.tests_vari.ExampleInstrumentedTest', 'com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner'//, '&&', 'adb', 'shell', 'cat', 'sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
+        //commandLine 'adb shell am instrument -w -e class com.example.tests_vari.ExampleInstrumentedTest com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner && adb pull sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
+        //commandLine 'adb', 'pull', 'sdcard/android/data/com.example.reportroot/files/JsonTestReport.json', '../'
+        //parent.name
+        commandLine 'adb', 'devices'
+        doLast{
+            println("LANCIATA TASK!!!!!!!!!!!!! $prova e $parent.project.name")
+        }
+        doLast {
+            exec {
+                //copia il file da emulatore a directory locale
+                commandLine 'adb', 'pull', "sdcard/android/data/${prova}.example.reportroot/files/JsonTestReport.json", '../'
+
+            }
+            //e legge per verifica
+            String fileContents = new File('JsonTestReport.json').text
+            println(fileContents)
+        }
+    }
+
+
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}

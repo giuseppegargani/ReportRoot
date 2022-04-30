@@ -88,12 +88,12 @@ android {
             println "The name of the test type: $connectedInstrumentTest.name"
             println "The type of test $connectedInstrumentTest.class"
         }
-        connectedAndroidTest.finalizedBy(customInstr)
-        assembleDebugAndroidTest.finalizedBy(customInstr)
+        connectedAndroidTest.finalizedBy(':addedTask:customInstr')
+        assembleDebugAndroidTest.finalizedBy(':addedTask:customInstr')
     }
 
     //VERIFICARE CHE TRASFERISCA PER DIVERSI COMANDI TEST STRUMENTALE, CON IF CONDIZIONALE (NON ERRORE) E SENZA ANDROIDJUNITRUNNER
-    task customInstr (type: Exec) {
+    /*task customInstr (type: Exec) {
 
         //esegue il comando
         //commandLine 'adb', 'shell', 'am', 'instrument', '-w', '-e', 'class', 'com.example.tests_vari.ExampleInstrumentedTest', 'com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner'//, '&&', 'adb', 'shell', 'cat', 'sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
@@ -113,7 +113,7 @@ android {
             String fileContents = new File('JsonTestReport.json').text
             println(fileContents)
         }
-    }
+    }*/
 
 
     /*if (tasks.findByName("ciao")) {
@@ -259,4 +259,7 @@ dependencies {
 
     //per stampa report
     implementation 'com.github.giuseppegargani:JsonReport:0.0.1'
+
+    //local library
+    implementation project(':addedTask')
 }

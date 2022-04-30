@@ -9,3 +9,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ReportRoot"
 include ':app'
+include ':addedTask'
